@@ -7,7 +7,7 @@ before:
     - go mod tidy
 
 builds:
-  - id: server
+  - id: app
     env: &env
       - CGO_ENABLED=0
     goos: &goos
@@ -18,11 +18,11 @@ builds:
     goarm: &goarm
       - 7
     binary: {{REPO_NAME}}
-    dir: ./cmd/server/
+    dir: ./cmd/
     mod_timestamp: "{{ .CommitTimestamp }}"
     ldflags: &ldflags
-      - -X=main.Version={{.Version}}
-      - -X=main.Commit={{.Commit}}
+      - -X=main.Version={{ .Version }}
+      - -X=main.Commit={{ .Commit }}
       - -X=main.Date={{ .CommitTimestamp }}
 
 # Sign everything else
@@ -46,7 +46,7 @@ nfpms:
     ids:
       - cli
     maintainer: Cedric Specht <cedric@specht-labs.de>
-    description: tka is a CLI tool for {{REPO_NAME}}, a tailnet-native Kubernetes access system. It allows users to securely log in to Kubernetes clusters using their Tailscale identity, receiving short-lived, auto-expiring kubeconfigs with scoped permissions.
+    description: {{REPO_DESCRIPTION}}
     homepage: https://{{REPO_NAME}}.specht-labs.de
     vendor: Specht Labs
     license: Apache 2.0
