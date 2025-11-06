@@ -2,11 +2,17 @@ extends: relaxed
 
 rules:
   line-length: disable
-  new-line-at-end-of-file: enable
+  new-line-at-end-of-file: disable
   indentation:
     level: error
-    spaces: 2
-    indent-sequences: true
+    spaces: consistent
+    indent-sequences: consistent
 
 ignore: |
   .yamllint.yml
+  charts/*/charts/
+  charts/*/templates/
+  kustomize/bases/*/charts/
+  kustomize/overlays/**/charts/
+  kustomize/*/*/*.secret.yaml
+  # TODO: Add your project-specific ignore patterns here

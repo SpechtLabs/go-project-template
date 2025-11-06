@@ -1,132 +1,91 @@
 {
-  "version": "2.0.0",
-  "tasks": [
-    {
-      "label": "install dependencies",
-      "type": "shell",
-      "command": "npm install",
-      "options": {
-        "cwd": "${workspaceFolder}/docs"
-      },
-      "group": {
-        "kind": "build",
-        "isDefault": true
-      },
-      "problemMatcher": [],
-      "detail": "Install project dependencies in docs/"
-    },
-    {
-      "label": "start dev server",
-      "type": "shell",
-      "command": "npm run docs:dev",
-      "options": {
-        "cwd": "${workspaceFolder}/docs"
-      },
-      "isBackground": true,
-      "problemMatcher": [
-        {
-          "pattern": [
-            {
-              "regexp": ".*",
-              "file": 0,
-              "location": 1,
-              "message": 2
-            }
-          ],
-          "background": {
-            "activeOnStart": true,
-            "beginsPattern": "Serving Vite / VuePress development server.*",
-            "endsPattern": ".*(server running|listening on).*"
-          }
-        }
-      ],
-      "group": "build",
-      "detail": "Starts the VuePress development server in docs/"
-    },
-    {
-      "label": "build for production",
-      "type": "shell",
-      "command": "npm run docs:build",
-      "options": {
-        "cwd": "${workspaceFolder}/docs"
-      },
-      "group": "build",
-      "problemMatcher": [],
-      "detail": "Builds the VuePress site for production in docs/"
-    },
-    {
-      "label": "lint",
-      "type": "shell",
-      "command": "npm run lint",
-      "options": {
-        "cwd": "${workspaceFolder}/docs"
-      },
-      "group": "test",
-      "problemMatcher": ["$eslint-stylish"],
-      "detail": "Runs ESLint checks on the docs/ directory"
-    },
-    {
-      "label": "test",
-      "type": "shell",
-      "command": "npm test",
-      "options": {
-        "cwd": "${workspaceFolder}/docs"
-      },
-      "group": "test",
-      "problemMatcher": [],
-      "detail": "Runs project tests in docs/"
-    },
-    {
-      "label": "markdownlint",
-      "type": "shell",
-      "command": "npx markdownlint \"**/*.md\"",
-      "group": "test",
-      "problemMatcher": [],
-      "detail": "Lint all Markdown files in the workspace"
-    },
-    {
-      "label": "go build",
-      "type": "shell",
-      "command": "go build ./...",
-      "options": {
-        "cwd": "${workspaceFolder}/src"
-      },
-      "group": "build",
-      "problemMatcher": [],
-      "detail": "Build all Go packages in src/"
-    },
-    {
-      "label": "go test",
-      "type": "shell",
-      "command": "go test -v ./...",
-      "options": {
-        "cwd": "${workspaceFolder}/src"
-      },
-      "group": "test",
-      "problemMatcher": ["$go-test"],
-      "detail": "Run all Go tests in src/"
-    },
-    {
-      "label": "go lint",
-      "type": "shell",
-      "command": "golangci-lint run ./...",
-      "options": {
-        "cwd": "${workspaceFolder}/src"
-      },
-      "group": "test",
-      "problemMatcher": [],
-      "detail": "Run golangci-lint on all Go files in src/"
-    },
-    {
-      "label": "go fmt",
-      "type": "shell",
-      "command": "go fmt ./...",
-      "options": {
-        "cwd": "${workspaceFolder}/src"
-      },
-      "group": "build",
-      "problemMatcher": [],
-      "detail": "Format all Go files in src/"
-    }
-  ]
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Build CLI",
+			"type": "shell",
+			"command": "go",
+			"args": [
+				"build",
+				"-o",
+				"${workspaceFolder}/bin/PROJECT_NAME-cli",
+				"./cmd/cli"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"group": "build",
+			"presentation": {
+				"reveal": "silent",
+				"revealProblems": "onProblem",
+				"panel": "shared",
+				"clear": true
+			},
+			"problemMatcher": [
+				"$go"
+			]
+		},
+		{
+			"label": "Build Server",
+			"type": "shell",
+			"command": "go",
+			"args": [
+				"build",
+				"-o",
+				"${workspaceFolder}/bin/PROJECT_NAME-server",
+				"./cmd/server"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}/"
+			},
+			"group": "build",
+			"presentation": {
+				"reveal": "silent",
+				"revealProblems": "onProblem",
+				"panel": "shared",
+				"clear": true
+			},
+			"problemMatcher": [
+				"$go"
+			]
+		},
+		{
+			"label": "Build Docs",
+			"type": "shell",
+			"command": "npm",
+			"args": [
+				"run",
+				"build"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}/docs"
+			},
+			"presentation": {
+				"reveal": "silent",
+				"revealProblems": "onProblem",
+				"panel": "shared",
+				"clear": true
+			},
+			"problemMatcher": []
+		},
+		{
+			"label": "Build All",
+			"dependsOn": [
+				"Build CLI",
+				"Build Server",
+				"Build Docs"
+			],
+			"dependsOrder": "sequence",
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"presentation": {
+				"reveal": "silent",
+				"revealProblems": "onProblem",
+				"panel": "shared",
+				"clear": true
+			}
+		}
+	]
 }

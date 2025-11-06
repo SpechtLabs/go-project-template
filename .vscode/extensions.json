@@ -1,26 +1,13 @@
 {
-  // Recommended VS Code extensions for VuePress development
-  "recommendations": [
-    "Vue.volar", // Vue 3 language support, essential for VuePress 2
-    "johnsoncodehk.vscode-typescript-vue-plugin", // TypeScript plugin for Vue
-    "dbaeumer.vscode-eslint", // For linting JavaScript/TypeScript
-    "esbenp.prettier-vscode", // For code formatting
-    "EditorConfig.EditorConfig", // Maintain consistent coding styles
-    "csstools.postcss", // For PostCSS support
-    "formulahendry.auto-rename-tag", // Auto-rename paired HTML/Vue tags
-    "aaron-bond.better-comments", // For improved comment readability
-    "ms-azuretools.vscode-containers",
-    "davidanson.vscode-markdownlint",
-    "yzhang.markdown-all-in-one", // Enhanced Markdown support
-    "shd101wyy.markdown-preview-enhanced", // For better Markdown preview
-    "vscode-icons-team.vscode-icons", // File icons for better visual distinction
-    "golang.go", // Go language support
-    "golangci.golangci-lint", // Go linter integration
-    "redhat.vscode-yaml", // YAML support
-    "ms-azuretools.vscode-docker", // Docker support
-    "docker.docker", // Docker extension for VS Code
-    "github.vscode-github-actions", // GitHub Actions support
-    "ms-vscode-remote.remote-containers", // Remote development in containers
-    "ms-vscode-remote.remote-ssh" // Remote development over SSH
-  ]
+    "recommendations": [
+        "bufbuild.vscode-buf",
+        "golang.go",
+        "yzhang.markdown-all-in-one",
+        "bierner.markdown-mermaid",
+        "DavidAnson.vscode-markdownlint",
+        "christian-kohler.path-intellisense",
+        "Vue.volar",
+        "shardulm94.trailing-spaces",
+        "bierner.markdown-footnotes"
+    ]
 }

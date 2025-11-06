@@ -33,8 +33,7 @@
       "description": "Request review for major updates",
       "matchUpdateTypes": ["major"],
       "automerge": false,
-      "labels": ["update/major"],
-      "assignees": ["cedi"]
+      "labels": ["update/major"]
     }
   ]
 }

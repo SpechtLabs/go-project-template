@@ -1,0 +1,13 @@
+server:
+  debug: true
+  port: 8080
+  readTimeout: 10s
+  readHeaderTimeout: 5s
+  writeTimeout: 20s
+  idleTimeout: 120s
+
+otel:
+  endpoint: localhost:4317
+  insecure: true
+
+# TODO: Add your application-specific configuration here

@@ -1,7 +1,7 @@
 {
-  "name": "{{REPO_NAME}}-docs",
+  "name": "tka-docs",
   "version": "1.1.0",
-  "description": "The documentation website for {{REPO_NAME}}, generated with VuePress",
+  "description": "The documentation website for Tailscale Kubernetes Auth, generated with VuePress",
   "type": "module",
   "author": "Cedric Specht <cedric@specht-labs.de>",
   "license": "Apache-2.0",
@@ -10,10 +10,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/SpechtLabs/{{REPO_NAME}}.git"
+    "url": "git+https://github.com/spechtlabs/tka.git"
   },
   "keywords": [
-    "{{REPO_NAME}}",
     "kubernetes",
     "tailscale",
     "restapi",
@@ -25,28 +24,30 @@
     "docs"
   ],
   "bugs": {
-    "url": "https://github.com/SpechtLabs/{{REPO_NAME}}/issues"
+    "url": "https://github.com/spechtlabs/tka/issues"
   },
-  "homepage": "https://github.com/SpechtLabs/{{REPO_NAME}}#readme",
+  "homepage": "https://github.com/spechtlabs/tka#readme",
   "devDependencies": {
-    "@vuepress/bundler-vite": "^2.0.0-rc.23",
-    "@vuepress/plugin-register-components": "2.0.0-rc.103",
+    "@vuepress/bundler-vite": "^2.0.0-rc.24",
+    "@vuepress/plugin-register-components": "2.0.0-rc.114",
     "http-server": "^14.1.1",
-    "sass-embedded": "^1.89.0",
-    "typescript": "^5.7.3",
-    "vue": "^3.5.13",
-    "vuepress": "2.0.0-rc.23",
-    "vuepress-theme-plume": "1.0.0-rc.152"
+    "markdown-it-container": "^4.0.0",
+    "sass-embedded": "^1.93.0",
+    "typescript": "^5.9.2",
+    "vue": "^3.5.21",
+    "vuepress": "2.0.0-rc.26",
+    "vuepress-theme-plume": "1.0.0-rc.173"
   },
   "dependencies": {
     "@vue/component-compiler-utils": "^3.3.0",
-    "lru-cache": "^11.0.0",
+    "lru-cache": "^11.2.1",
     "markdown-it-emoji": "^3.0.0",
-    "mermaid": "^11.5.0",
+    "mermaid": "^11.12.0",
+    "swagger-ui-dist": "^5.29.0",
     "vue-template-compiler": "^2.7.16"
   },
   "optionalDependencies": {
-    "@rollup/rollup-linux-x64-gnu": "^4.38.0",
+    "@rollup/rollup-linux-x64-gnu": "^4.52.0",
     "sass-embedded-linux-x64": "latest"
   },
   "scripts": {
