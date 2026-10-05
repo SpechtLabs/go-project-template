@@ -1,2 +1,22 @@
-ignore:
-  - "pkg/cluster/messages"
+# Codecov fails a pull request only when coverage falls below 85%, for the
+# whole project or for the lines the pull request changes. Without this,
+# both targets default to the base branch's own coverage, so a change with
+# 95% patch coverage is flagged whenever main happens to sit higher.
+#
+# The template starts above 85%. A project that adopts it with existing code
+# below that should set the project target to `auto` (with a comment saying
+# to raise it once the project gets there) and keep the patch target.
+coverage:
+  status:
+    project:
+      default:
+        target: 85%
+    patch:
+      default:
+        target: 85%
+
+# Each upload carries a flag (go from go.yaml's unit tests). A flag missing
+# from a commit's uploads keeps its last coverage rather than counting as none.
+flag_management:
+  default_rules:
+    carryforward: true

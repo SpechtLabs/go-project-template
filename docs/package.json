@@ -1,53 +1,37 @@
 {
-  "name": "tka-docs",
-  "version": "1.1.0",
-  "description": "The documentation website for Tailscale Kubernetes Auth, generated with VuePress",
+  "name": "docs",
+  "version": "0.1.0",
+  "description": "The documentation website for PROJECT_NAME, generated with VuePress",
   "type": "module",
   "author": "Cedric Specht <cedric@specht-labs.de>",
-  "license": "Apache-2.0",
+  "private": true,
   "engines": {
     "node": "^18.20.0 || >=20.0.0"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/spechtlabs/tka.git"
+    "url": "git+https://github.com/SpechtLabs/PROJECT_NAME.git"
   },
-  "keywords": [
-    "kubernetes",
-    "tailscale",
-    "restapi",
-    "rest",
-    "grpc",
-    "documentation",
-    "vuepress",
-    "website",
-    "docs"
-  ],
   "bugs": {
-    "url": "https://github.com/spechtlabs/tka/issues"
+    "url": "https://github.com/SpechtLabs/PROJECT_NAME/issues"
   },
-  "homepage": "https://github.com/spechtlabs/tka#readme",
+  "homepage": "https://github.com/SpechtLabs/PROJECT_NAME#readme",
   "devDependencies": {
-    "@vuepress/bundler-vite": "^2.0.0-rc.24",
-    "@vuepress/plugin-register-components": "2.0.0-rc.114",
+    "@vuepress/bundler-vite": "2.0.0-rc.31",
+    "@vuepress/plugin-register-components": "2.0.0-rc.135",
     "http-server": "^14.1.1",
     "markdown-it-container": "^4.0.0",
-    "sass-embedded": "^1.93.0",
-    "typescript": "^5.9.2",
-    "vue": "^3.5.21",
-    "vuepress": "2.0.0-rc.26",
-    "vuepress-theme-plume": "1.0.0-rc.173"
+    "sass-embedded": "^1.105.1",
+    "typescript": "^6.0.3",
+    "vue": "^3.5.43",
+    "vuepress": "2.0.0-rc.31",
+    "vuepress-theme-plume": "1.0.0-rc.212"
   },
   "dependencies": {
-    "@vue/component-compiler-utils": "^3.3.0",
-    "lru-cache": "^11.2.1",
-    "markdown-it-emoji": "^3.0.0",
-    "mermaid": "^11.12.0",
-    "swagger-ui-dist": "^5.29.0",
-    "vue-template-compiler": "^2.7.16"
+    "mermaid": "^12.1.0"
   },
   "optionalDependencies": {
-    "@rollup/rollup-linux-x64-gnu": "^4.52.0",
+    "@rollup/rollup-linux-x64-gnu": "^4.64.0",
     "sass-embedded-linux-x64": "latest"
   },
   "scripts": {
@@ -55,6 +39,6 @@
     "dev-clean": "vuepress dev . --clean-cache --clean-temp",
     "build": "vuepress build . --clean-cache --clean-temp",
     "preview": "http-server ./.vuepress/dist",
-    "vp-update": "npx vp-update"
+    "vp-update": "bunx vp-update"
   }
 }

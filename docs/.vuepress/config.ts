@@ -8,25 +8,18 @@ import { plumeTheme } from "vuepress-theme-plume";
 export default defineUserConfig({
   base: "/",
   lang: "en-US",
-  title: "Tailscale K8s Auth",
-  description:
-    "Zero-friction Kubernetes access using Tailscale and ephemeral service accounts",
+  title: "PROJECT_NAME",
+  description: "PROJECT_NAME does one thing, and does it well",
 
   head: [
-    [
-      "meta",
-      {
-        name: "description",
-        content:
-          "Forget complex auth proxies, VPNs, or OIDC setups. `tka` gives you secure, identity-aware access to your Kubernetes clusters using just your Tailscale identity and network — with short-lived, auto-cleaned credentials.",
-      },
-    ],
+    ["meta", { name: "description", content: "PROJECT_NAME does one thing, and does it well" }],
     ["link", { rel: "icon", type: "image/png", href: "/images/specht.png" }],
   ],
 
   bundler: viteBundler(),
   shouldPrefetch: false,
 
+  // ::: terminal blocks render as a terminal window (components/Terminal.vue).
   extendsMarkdown: (md) => {
     md.use(container, "terminal", {
       validate: (params: string) => {
@@ -69,7 +62,7 @@ export default defineUserConfig({
   ],
 
   theme: plumeTheme({
-    docsRepo: "https://github.com/spechtlabs/tka",
+    docsRepo: "https://github.com/SpechtLabs/PROJECT_NAME",
     docsDir: "docs",
     docsBranch: "main",
 
@@ -79,162 +72,54 @@ export default defineUserConfig({
 
     blog: false,
 
-    article: "/article/",
-
     cache: "filesystem",
     search: { provider: "local" },
 
     sidebar: {
-      // Getting Started section - combines tutorials and overview
+      // Getting Started: the tutorial, which teaches by doing.
       "/getting-started/": [
         {
           text: "Getting Started",
           icon: "mdi:rocket-launch",
           prefix: "/getting-started/",
-          items: [
-            { text: "Overview", link: "overview", icon: "mdi:eye" },
-            { text: "Prerequisites", link: "prerequisites", icon: "mdi:check-circle" },
-            { text: "Quick Start", link: "quick", icon: "mdi:flash", badge: "5 min" },
-            { text: "Comprehensive Guide", link: "comprehensive", icon: "mdi:book-open-page-variant" },
-            { text: "Troubleshooting & Next Steps", link: "troubleshooting", icon: "mdi:wrench" },
-          ],
+          items: [{ text: "Quick start", link: "quick-start", icon: "mdi:flash", badge: "5 min" }],
         },
       ],
 
-      // Guides section
+      // How-to Guides: one task each.
       "/guides/": [
         {
           text: "How-to Guides",
           icon: "mdi:compass",
           prefix: "/guides/",
-          items: [
-            {
-              text: "Security & Access",
-              icon: "mdi:shield",
-              link: "configure-acl",
-              items: [
-                { text: "Configure ACLs", link: "configure-acl", icon: "mdi:shield-lock" },
-              ]
-            },
-            {
-              text: "Shell & CLI",
-              icon: "mdi:console-line",
-              link: "shell-integration",
-              items: [
-                { text: "Shell Integration", link: "shell-integration", icon: "mdi:console" },
-                { text: "Use Subshell", link: "use-subshell", icon: "mdi:layers" },
-                { text: "CLI Autocompletion", link: "autocompletion", icon: "mdi:keyboard" },
-              ]
-            },
-            {
-              text: "Configuration & Support",
-              icon: "mdi:cog",
-              link: "configure-settings",
-              items: [
-                { text: "Configure Settings", link: "configure-settings", icon: "mdi:cog" },
-                { text: "Troubleshooting", link: "troubleshooting", icon: "mdi:bug" },
-              ]
-            }
-          ],
+          items: [{ text: "Install PROJECT_NAME", link: "install", icon: "mdi:download" }],
         },
       ],
 
-      // Understanding section
+      // Understanding: background and design.
       "/understanding/": [
         {
-          text: "Understanding TKA",
+          text: "Understanding",
           icon: "mdi:lightbulb",
-          collapsed: false,
           prefix: "/understanding/",
-          items: [
-            { text: "Architecture", link: "architecture", icon: "mdi:sitemap" },
-            { text: "Security Model", link: "security", icon: "mdi:security" },
-          ],
+          items: [{ text: "Overview", link: "overview", icon: "mdi:eye" }],
         },
       ],
 
-      // Reference section - comprehensive
+      // Reference: lookup only.
       "/reference/": [
         {
-          text: "API & CLI Reference",
+          text: "Reference",
           icon: "mdi:book",
-          collapsed: false,
           prefix: "/reference/",
-          items: [
-            { text: "Configuration", link: "configuration", icon: "mdi:file-cog" },
-            { text: "API Reference", link: "api", icon: "mdi:api" },
-            { text: "CLI Reference", link: "cli", icon: "mdi:terminal", collapsed: true, items: [
-              { text: "Config", link: "cli#usage-config", icon: "mdi:cog", badge: "New" },
-              { text: "Login", link: "cli#usage-login", icon: "mdi:login"  },
-              { text: "Signout", link: "cli#usage-signout", icon: "mdi:logout" },
-              { text: "Reauthenticate", link: "cli#usage-reauthenticate", icon: "mdi:refresh" },
-              { text: "Kubeconfig", link: "cli#usage-kubeconfig", icon: "mdi:kubernetes" },
-              { text: "Shell", link: "cli#usage-shell", icon: "mdi:console"},
-              { text: "Cluster Info", link: "cli#usage-cluster-info", icon: "mdi:information", badge: "New" },
-            ]},
-          ],
-        },
-        {
-          text: "Developer Documentation",
-          icon: "mdi:code-braces",
-          badge: "Advanced",
-          collapsed: true,
-          prefix: "/reference/developer/",
-          items: [
-            { text: "Architecture", link: "architecture", icon: "mdi:sitemap" },
-            { text: "Shell Integration Details", link: "shell-integration", icon: "mdi:console" },
-            { text: "Request Flows", link: "request-flows", icon: "mdi:workflow" },
-            { text: "pkg/tailscale", link: "tailscale-server", icon: "mdi:package-variant" },
-          ],
+          items: [{ text: "Command line", link: "cli", icon: "mdi:terminal" }],
         },
       ],
     },
 
-    /**
-     * markdown
-     * @see https://theme-plume.vuejs.press/config/markdown/
-     */
     markdown: {
       collapse: true,
-      timeline: true,
-      plot: true,
-      //   abbr: true,         // 启用 abbr 语法  *[label]: content
-      //   annotation: true,   // 启用 annotation 语法  [+label]: content
-      //   pdf: true,          // 启用 PDF 嵌入 @[pdf](/xxx.pdf)
-      //   caniuse: true,      // 启用 caniuse 语法  @[caniuse](feature_name)
-      //   plot: true,         // 启用隐秘文本语法 !!xxxx!!
-      //   bilibili: true,     // 启用嵌入 bilibili视频 语法 @[bilibili](bid)
-      //   youtube: true,      // 启用嵌入 youtube视频 语法 @[youtube](video_id)
-      //   artPlayer: true,    // 启用嵌入 artPlayer 本地视频 语法 @[artPlayer](url)
-      //   audioReader: true,  // 启用嵌入音频朗读功能 语法 @[audioReader](url)
-      //   icons: true,        // 启用内置图标语法  :[icon-name]:
-      //   codepen: true,      // 启用嵌入 codepen 语法 @[codepen](user/slash)
-      //   replit: true,       // 启用嵌入 replit 语法 @[replit](user/repl-name)
-      //   codeSandbox: true,  // 启用嵌入 codeSandbox 语法 @[codeSandbox](id)
-      //   jsfiddle: true,     // 启用嵌入 jsfiddle 语法 @[jsfiddle](user/id)
-      //   npmTo: true,        // 启用 npm-to 容器  ::: npm-to
-      //   demo: true,         // 启用 demo 容器  ::: demo
-      repl: {
-        // 启用 代码演示容器
-        go: true, // ::: go-repl
-        rust: true, // ::: rust-repl
-        //     kotlin: true,     // ::: kotlin-repl
-      },
-      //   math: {             // 启用数学公式
-      //     type: 'katex',
-      //   },
-      //   chartjs: true,      // 启用 chart.js
-      //   echarts: true,      // 启用 ECharts
-      mermaid: true, // 启用 mermaid
-      //   flowchart: true,    // 启用 flowchart
-      image: {
-        figure: true, // 启用 figure
-        lazyload: true, // 启用图片懒加载
-        mark: true, // 启用图片标记
-        size: true, // 启用图片大小
-      },
-      //   include: true,      // 在 Markdown 文件中导入其他 markdown 文件内容
-      //   imageSize: 'local', // 启用 自动填充 图片宽高属性，避免页面抖动
+      mermaid: true,
     },
 
     watermark: false,

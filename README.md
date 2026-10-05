@@ -1,122 +1,115 @@
 # PROJECT_NAME
 
-[![Go Build & Docker Build](https://github.com/OWNER/PROJECT_NAME/actions/workflows/build.yaml/badge.svg)](https://github.com/OWNER/PROJECT_NAME/actions/workflows/build.yaml)
-[![Go Report Card](https://goreportcard.com/badge/github.com/OWNER/PROJECT_NAME)](https://goreportcard.com/report/github.com/OWNER/PROJECT_NAME)
-[![Go Doc](https://godoc.org/github.com/OWNER/PROJECT_NAME?status.svg)](https://godoc.org/github.com/OWNER/PROJECT_NAME)
+PROJECT_NAME does one thing, and does it well.
 
-> A well-structured Go application template
+[![CI](https://github.com/SpechtLabs/PROJECT_NAME/actions/workflows/ci.yaml/badge.svg)](https://github.com/SpechtLabs/PROJECT_NAME/actions/workflows/ci.yaml)
+[![Go Reference](https://pkg.go.dev/badge/github.com/spechtlabs/PROJECT_NAME.svg)](https://pkg.go.dev/github.com/spechtlabs/PROJECT_NAME)
+[![codecov](https://codecov.io/gh/SpechtLabs/PROJECT_NAME/graph/badge.svg)](https://codecov.io/gh/SpechtLabs/PROJECT_NAME)
 
-PROJECT_NAME is a production-ready Go application template with clean architecture, Kubernetes integration, modern CLI interfaces, and robust observability.
+<!-- template:begin -->
 
-## Features
+## Using this template
 
-- **Clean Architecture** - Clear separation of concerns with `cmd/`, `pkg/`, and `internal/` structure
-- **CLI Support** - Modern CLI built with Cobra and Bubbletea
-- **Kubernetes Ready** - Operator framework integration with controller-runtime
-- **Observability** - OpenTelemetry tracing, Prometheus metrics, structured logging
-- **Testing** - Comprehensive test structure with mocks and helpers
-- **CI/CD** - GitHub Actions workflows for build, test, and release
+This is the template new SpechtLabs Go projects start from. It holds the tooling every project shares, as [sigil](https://github.com/SpechtLabs/sigil) runs it, around a minimal command line: a root command and `PROJECT_NAME version`. Everything a project needs is wired up and green from the first commit, so a new project starts with its own code rather than with CI.
 
-## Quick Start
+### Start a project
 
-```bash
-# Clone this template
-git clone https://github.com/OWNER/PROJECT_NAME.git
-cd PROJECT_NAME
+1. Create the repository from the template and clone it:
 
-# Run the initialization script
-./scripts/init.sh YOUR_PROJECT_NAME YOUR_GITHUB_OWNER
+   ```shell
+   gh repo create SpechtLabs/my-tool --template SpechtLabs/go-project-template --public --clone
+   cd my-tool
+   ```
 
-# Install dependencies
-go mod tidy
+2. Rename the project. The script replaces the `PROJECT_NAME` placeholder in every tracked file, renames `cmd/PROJECT_NAME`, removes this section and deletes itself:
 
-# Build
-make build
+   ```shell
+   ./scripts/init.sh my-tool
+   ```
 
-# Run tests
-make test
+3. Replace the placeholder text the script can't write for you: the one-line description ("does one thing, and does it well") in this README, `internal/cli/cli.go`, `.goreleaser.yaml` and `docs/`, and the docs pages themselves.
+
+4. Check that everything still passes, and commit:
+
+   ```shell
+   mise trust && mise install
+   mise run check
+   git commit -am "chore: start my-tool from go-project-template"
+   ```
+
+5. Set up the repository on GitHub:
+   - **Merging:** allow squash merges only, with the pull request title and description as the commit message, and allow auto-merge (Renovate automerges patch and minor updates once CI passes).
+   - **Secrets:** `CODECOV_TOKEN` (the coverage upload; optional for a public repository), `RELEASE_PLEASE_TOKEN` (a fine-grained token with read and write access to contents, pull requests and issues, so the release pull request's CI runs; release.yaml explains why) and `HOMEBREW_TAP_GITHUB_TOKEN` (write access to SpechtLabs/homebrew-tap, for the cask). The organization may already provide them.
+   - **Renovate:** make sure the Renovate app covers the new repository.
+   - **Docs:** set up the project's site on StaticPages (pages.specht-labs.de) before the first deploy, or delete `docs/` and `.github/workflows/docs-website.yaml` if the project has no website.
+
+The release and docs deploy jobs skip in go-project-template itself, so the template never tags a version or publishes a cask. A repository created from it has another name, so they run there with nothing to change.
+
+### What's in the box
+
+| File | What it does |
+| ---- | ------------ |
+| `.mise.toml` | Every tool, pinned to an exact version, and the tasks that build and check the project. CI runs the same tasks. `mise tasks` lists them. |
+| `.golangci.yaml`, `.custom-gcl.yml` | golangci-lint v2 with the [golint-sl](https://golint.specht-labs.de/) plugin, built into `./custom-gcl` by `mise run lint-build`. |
+| `.github/workflows/ci.yaml` | What a pull request runs; it calls `go.yaml`. |
+| `.github/workflows/go.yaml` | Lint, unit tests with the race detector and coverage for Codecov, and a GoReleaser snapshot build. |
+| `.github/workflows/release.yaml` | release-please, gated on `go.yaml`, and GoReleaser once a release is created. A manual run with a tag repairs a release that failed to publish. |
+| `.github/workflows/pr-hygiene.yaml` | Checks the pull request title is a Conventional Commit, checks release-please can parse the squash commit (`.github/commit-lint/`), and labels the pull request (`.github/labeler.yml`). |
+| `.github/workflows/docs-website.yaml` | Lints and builds the VuePress site in `docs/`, and deploys it from main. |
+| `.goreleaser.yaml` | Linux and macOS binaries for amd64 and arm64, a cosign-signed `checksums.txt`, and a Homebrew cask in SpechtLabs/homebrew-tap. |
+| `.release-please-config.json` | Versions and changelog from Conventional Commits; `docs/` changes don't cut releases. |
+| `renovate.json` | Keeps Go modules, tools, actions and docs dependencies current, automerging all but majors. |
+| `codecov.yml` | Fails a pull request whose project or patch coverage drops below 85%. |
+| `.pre-commit-config.yaml`, `.editorconfig`, `.yamllint.yaml`, `.markdownlint-cli2.yaml` | Editor and commit-time checks that match CI. |
+
+### Leaving pieces out
+
+- **A library with no binary:** delete `cmd/`, `.goreleaser.yaml`, the `build` job in `go.yaml`, the `goreleaser` job in `release.yaml`, and the GoReleaser tasks in `.mise.toml`. [go-otel-utils](https://github.com/SpechtLabs/go-otel-utils) shows the result, for several modules.
+- **No website:** delete `docs/`, `.github/workflows/docs-website.yaml`, the docs tasks in `.mise.toml`, and the docs rules in `renovate.json` and `.github/labeler.yml`.
+
+<!-- template:end -->
+
+## Install
+
+```shell
+brew install spechtlabs/tap/PROJECT_NAME
 ```
 
-## Repository Structure
+Release archives for Linux and macOS are on the [releases page](https://github.com/SpechtLabs/PROJECT_NAME/releases). The [installation guide](docs/guides/install.md) covers checking their signatures and building from source.
 
-```text
-.
-├── api/                          # Kubernetes Custom Resource Definitions
-│   └── v1alpha1/                # API version
-├── cmd/                         # Application entry points
-│   ├── cli/                     # CLI application
-│   └── server/                  # Server application
-├── config/                      # Kubernetes manifests and configuration
-│   ├── crd/                    # Custom Resource Definitions
-│   └── rbac/                   # Role-Based Access Control
-├── internal/                    # Private application code
-│   ├── cli/                    # CLI-specific utilities
-│   └── utils/                  # Shared utilities
-├── pkg/                        # Public library code
-│   ├── client/                 # Client abstractions
-│   ├── middleware/             # HTTP middleware
-│   ├── models/                 # Data models and DTOs
-│   └── service/                # Business logic services
-├── hack/                       # Development utilities
-├── scripts/                    # Utility scripts
-├── go.mod                      # Go module definition
-├── Makefile                    # Build automation
-└── README.md                   # Project documentation
+## Usage
+
+```shell
+PROJECT_NAME version
 ```
+
+`PROJECT_NAME --help` lists every command, and the [command line reference](docs/reference/cli.md) describes them.
 
 ## Development
 
-### Prerequisites
+The tools come from [mise](https://mise.jdx.dev/), pinned in `.mise.toml`:
 
-- Go 1.21+
-- Make
-- Docker (for container builds)
-
-### Building
-
-```bash
-# Build all binaries
-make build
-
-# Run tests
-make test
-
-# Run linter
-make lint
-
-# Generate code (CRDs, swagger, etc.)
-make generate
+```shell
+mise trust && mise install
 ```
 
-### Running Locally
+| Task | What it does |
+| ---- | ------------ |
+| `mise run build` | Build `bin/PROJECT_NAME`. |
+| `mise run test` | Run the tests with the race detector, writing `coverage.txt`. |
+| `mise run lint` | Lint Go with golangci-lint and golint-sl, YAML with yamllint, and the workflows with actionlint. |
+| `mise run fmt` | Format go.mod, the Go sources and the Markdown. |
+| `mise run check` | Everything CI checks. Run it before you push. |
+| `mise run snapshot` | Build every release binary into `dist/` with GoReleaser. |
+| `mise run docs-dev` | Serve the documentation website with hot reload. |
+| `mise run update-gha` | Pin new GitHub Actions to commit SHAs. |
 
-```bash
-# Run CLI
-./bin/PROJECT_NAME-cli --help
-
-# Run server
-./bin/PROJECT_NAME-server
-```
-
-## Configuration
-
-Configuration is managed through:
-
-- Default values in code
-- Config file (YAML/JSON)
-- Environment variables
-- Command-line flags
-
-See `config.yaml` for example configuration.
-
-## Documentation
-
-- **[Project Structure Guide](PROJECT_STRUCTURE_GUIDE.md)** - Comprehensive guide to the project structure and conventions
+`pre-commit install` runs the commit-time checks on every commit.
 
 ## Contributing
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests
-5. Submit a pull request
+Pull requests are squash-merged, with the pull request title as the commit subject and its description as the body. [release-please](https://github.com/googleapis/release-please) reads them to decide the next version and write the changelog, so the title must be a [Conventional Commit](https://www.conventionalcommits.org/en/v1.0.0/): `feat:` and `fix:` for changes users see, and `chore:`, `ci:`, `build:`, `docs:`, `refactor:` or `test:` for the rest, which don't cut a release.
+
+## License
+
+[Apache License 2.0](LICENSE)

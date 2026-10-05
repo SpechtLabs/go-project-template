@@ -1,30 +1,150 @@
-[tools]
-# Go version from your go.mod file
-go = "1.25.3"
+# .mise.toml — local tooling, exact pins (repo convention)
+#
+# The tasks below define how PROJECT_NAME is built and checked. CI uses these
+# tasks, so `mise run check` passing locally means CI's gates pass too.
+# Renovate keeps every pin in this file current.
 
-# Node.js for JavaScript/TypeScript
-node = "24.10.0"
-npm = "11.5.1"
+[settings]
+# The pins below are the only source of tool versions. Without this, mise
+# would also read go.mod, .nvmrc and friends, and a toolchain line there could
+# quietly override the pin.
+idiomatic_version_file_enable_tools = []
+
+[tools]
+# Keep in lockstep with the toolchain directive in go.mod; Renovate bumps both
+# together. The go directive (minimum language version) is bumped by hand.
+go = "1.27.1"
+"go:golang.org/x/tools/gopls" = "0.23.0"
+"go:github.com/go-delve/delve/cmd/dlv" = "1.27.2"
 
 # Pre-commit for Git hooks
-pre-commit = "4.3.0"
+pre-commit = "4.6.2"
 
-# Additional tools for development
-golangci-lint = "2.5.0"
-goreleaser = "2.12.0"
-kind = "0.30.0"
-kubectl = "1.34.1"
-markdownlint-cli2 = "0.18.1"
+# Linters. golangci-lint must match the version in .custom-gcl.yml; Renovate
+# groups the two into one PR.
+golangci-lint = "2.14.0"
+yamllint = "1.38.0"
+actionlint = "1.7.12"
+# actionlint runs shellcheck on every `run:` script when it's on PATH, and
+# silently skips them when it isn't.
+shellcheck = "0.11.0"
 
-# code-generators
-swag = "1.8.7"
-"go:sigs.k8s.io/controller-tools/cmd/controller-gen" = "0.17.2"
-protoc = "latest"
-protoc-gen-go = "latest"
+# Release tooling
+goreleaser = "2.18.2"
+# Signs the release checksums (see signs in .goreleaser.yaml).
+cosign = "3.1.3"
 
-[env]
-# Set environment variables for Go development
-GO111MODULE = "on"
+# Pins GitHub Actions to commit SHAs (see the update-gha task)
+pinact = "5.0.0"
 
-# Vue.js related environment variables
-NODE_ENV = "development"
+# Documentation website (docs/): VuePress builds under bun, and markdownlint-cli2
+# is the same version the docs workflow runs. markdownlint-cli2 is an npm
+# package, which mise installs with this node.
+bun = "1.4.2"
+node = "24.21.0"
+markdownlint-cli2 = "0.23.3"
+
+[tasks.build]
+description = "Build the PROJECT_NAME binary into bin/"
+run = "go build -o bin/PROJECT_NAME ./cmd/PROJECT_NAME/"
+
+[tasks.test]
+description = "Run the test suite with race detector and coverage"
+run = "go test -race -covermode=atomic -coverpkg=./... -coverprofile=coverage.txt ./..."
+
+# `mise run fmt` rewrites everything that has a canonical form; `mise run
+# lint` checks the same things without touching a file. The steps run in
+# order, because go mod tidy may rewrite go.mod.
+[tasks.fmt]
+description = "Format everything: go.mod, Go sources and Markdown"
+run = [
+  { task = "go-tidy" },
+  { task = "go-fmt" },
+  { task = "md-fmt" },
+]
+
+[tasks.go-tidy]
+description = "Tidy go.mod and go.sum"
+run = "go mod tidy"
+
+# The same gofmt and goimports settings `mise run lint` checks, read from
+# .golangci.yaml.
+[tasks.go-fmt]
+description = "Format Go sources with the formatters configured for golangci-lint"
+run = "golangci-lint fmt"
+
+[tasks.md-fmt]
+description = "Fix what markdownlint can fix in the documentation and the README"
+run = "markdownlint-cli2 --fix 'docs/**/*.md' '*.md'"
+
+# golint-sl runs as a golangci-lint module plugin, so it has to be compiled into
+# a custom binary (./custom-gcl). Rebuilds only when .custom-gcl.yml changes.
+[tasks.lint-build]
+description = "Build the custom-gcl binary with the golint-sl plugin baked in"
+# The build downloads golangci-lint's whole dependency tree, and the module
+# proxy sometimes resets the HTTP/2 stream partway through. Modules already
+# downloaded stay in the cache, so a retry picks up where it failed.
+run = """
+for attempt in 1 2 3; do
+  golangci-lint custom && exit 0
+  echo "golangci-lint custom failed (attempt $attempt of 3)" >&2
+  sleep 10
+done
+exit 1
+"""
+sources = [".custom-gcl.yml"]
+outputs = ["custom-gcl"]
+
+# GoReleaser builds the tagged tree as it is, so an untidy go.mod has to fail
+# CI rather than be fixed up at release time.
+[tasks.mod-tidy]
+description = "Check that go.mod and go.sum are tidy"
+run = "go mod tidy -diff"
+
+[tasks.lint]
+description = "Lint the Go module with golangci-lint and golint-sl, YAML and workflows"
+depends = ["lint-build", "yaml-lint", "actionlint"]
+run = "./custom-gcl run ./..."
+
+[tasks.yaml-lint]
+description = "Lint every YAML file in the repository"
+run = "yamllint --strict ."
+
+[tasks.actionlint]
+description = "Lint the GitHub Actions workflows"
+run = "actionlint"
+
+[tasks.release-check]
+description = "Validate the GoReleaser config"
+run = "goreleaser check"
+
+[tasks.snapshot]
+description = "Build a local GoReleaser snapshot into dist/"
+run = "goreleaser build --snapshot --clean"
+
+[tasks.check]
+description = "The definition of done: every gate CI runs on the Go code"
+depends = [
+  "lint",
+  "mod-tidy",
+  "test",
+  "release-check",
+]
+
+[tasks.update-gha]
+description = "Pin GitHub Actions to commit SHAs (Renovate keeps them current afterwards)"
+run = "pinact run -e 'SpechtLabs/StaticPages-Upload'"
+
+[tasks.docs-lint]
+description = "Lint the documentation markdown (the docs workflow's first job)"
+run = "markdownlint-cli2 'docs/**/*.md'"
+
+[tasks.docs-dev]
+description = "Serve the documentation website locally with hot reload"
+dir = "docs"
+run = ["bun install", "bun run dev"]
+
+[tasks.docs-build]
+description = "Build the documentation website (the docs workflow's second job)"
+dir = "docs"
+run = ["bun install --frozen-lockfile", "bun run build"]
