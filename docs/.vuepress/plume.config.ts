@@ -12,7 +12,7 @@ export default defineThemeConfig({
   social: [
     {
       icon: "github",
-      link: "https://github.com/spechtlabs/tka",
+      link: "https://github.com/SpechtLabs/PROJECT_NAME",
     },
   ],
   navbarSocialInclude: ["github"],
@@ -26,7 +26,7 @@ export default defineThemeConfig({
     message:
       '<a target="_self" href="https://specht-labs.de/impressum/">Impressum</a> - <a target="_self" href="https://specht-labs.de/datenschutz/">Datenschutz</a> - Powered by <a target="_blank" href="https://v2.vuepress.vuejs.org/">VuePress</a>',
     copyright:
-      '&#169; 2025 Cedric Specht - <a target="_self" href="https://specht-labs.de/">Specht Labs</a>',
+      '&#169; Cedric Specht - <a target="_self" href="https://specht-labs.de/">Specht Labs</a>',
   },
 
   /**
@@ -43,15 +43,4 @@ export default defineThemeConfig({
   },
 
   navbar,
-
-  /**
-   * 公告板
-   * @see https://theme-plume.vuejs.press/guide/features/bulletin/
-   */
-  // bulletin: {
-  //   layout: 'top-right',
-  //   contentType: 'markdown',
-  //   title: '公告板标题',
-  //   content: '公告板内容',
-  // },
 });

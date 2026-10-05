@@ -3,75 +3,83 @@ version: 2
 project_name: PROJECT_NAME
 
 builds:
-  - id: server
-    env: &env
+  - id: PROJECT_NAME
+    env:
       - CGO_ENABLED=0
-    goos: &srv_goos
-      - linux
-    goarch: &goarch
-      - arm64
-      - amd64
-    goarm: &goarm
-      - "7"
-    binary: PROJECT_NAME-server
-    dir: ./cmd/server/
-    mod_timestamp: "{{ .CommitTimestamp }}"
-    ldflags: &ldflags
-      - -X=github.com/OWNER/PROJECT_NAME/internal/cli/cmd.Version={{.Version}}
-      - -X=github.com/OWNER/PROJECT_NAME/internal/cli/cmd.Commit={{.Commit}}
-      - -X=github.com/OWNER/PROJECT_NAME/internal/cli/cmd.Date={{ .CommitDate }}
-
-  - id: cli
-    env: *env
     goos:
       - linux
-      - windows
       - darwin
-    goarch: *goarch
-    goarm: *goarm
-    binary: PROJECT_NAME-cli
-    dir: ./cmd/cli/
+    goarch:
+      - amd64
+      - arm64
+    binary: PROJECT_NAME
+    main: ./cmd/PROJECT_NAME
     mod_timestamp: "{{ .CommitTimestamp }}"
-    ldflags: *ldflags
-
-# Sign everything else
-signs:
-  - cmd: cosign
-    signature: "${artifact}.sig"
-    certificate: "${artifact}.pem"
-    args:
-      - sign-blob
-      - --yes
-      - --oidc-issuer=https://token.actions.githubusercontent.com
-      - "--output-certificate=${certificate}"
-      - "--output-signature=${signature}"
-      - "${artifact}"
-    artifacts: binary
-
-# Regular OS packages (for now only systemd based OSes)
-nfpms:
-  - id: cli
-    package_name: PROJECT_NAME
-    ids:
-      - cli
-    maintainer: Your Name <your.email@example.com>
-    description: PROJECT_NAME is a CLI tool for PROJECT_NAME.
-    homepage: https://github.com/OWNER/PROJECT_NAME
-    vendor: OWNER
-    license: Apache 2.0
-    formats:
-      - deb
-      - rpm
-      - archlinux
-    bindir: /usr/bin
+    flags:
+      - -trimpath
+    ldflags:
+      - -s -w
+      # Only the version is injected; commit, commit time and dirty state come
+      # from the VCS info the Go toolchain embeds (see `PROJECT_NAME version`).
+      - -X=main.version={{ .Version }}
 
 archives:
-  - id: server
+  - id: PROJECT_NAME
     ids:
-      - server
-    name_template: 'PROJECT_NAME_server_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ with .Arm }}v{{ . }}{{ end }}{{ with .Mips }}_{{ . }}{{ end }}{{ if not (eq .Amd64 "v1") }}{{ .Amd64 }}{{ end }}'
+      - PROJECT_NAME
+    name_template: "PROJECT_NAME_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
 
-  - id: cli
+checksum:
+  name_template: "checksums.txt"
+
+# Publish to SpechtLabs/homebrew-tap using HOMEBREW_TAP_GITHUB_TOKEN, a
+# repository or organization Actions secret with Contents: read and write
+# access to the tap. The default GITHUB_TOKEN only has access to this repo.
+homebrew_casks:
+  - name: PROJECT_NAME
     ids:
-      - cli
-    name_template: 'PROJECT_NAME_cli_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ with .Arm }}v{{ . }}{{ end }}{{ with .Mips }}_{{ . }}{{ end }}{{ if not (eq .Amd64 "v1") }}{{ .Amd64 }}{{ end }}'
+      - PROJECT_NAME
+    repository:
+      owner: SpechtLabs
+      name: homebrew-tap
+      branch: main
+      token: "{{ .Env.HOMEBREW_TAP_GITHUB_TOKEN }}"
+    directory: Casks
+    homepage: "https://github.com/SpechtLabs/PROJECT_NAME"
+    description: "PROJECT_NAME does one thing, and does it well"
+    skip_upload: auto
+    commit_author:
+      name: goreleaser-bot
+      email: bot@specht-labs.de
+    # PROJECT_NAME is not Apple-notarized. Remove quarantine from the installed
+    # binary so Gatekeeper allows it to run, as with the other CLIs in the tap.
+    hooks:
+      post:
+        install: |
+          if OS.mac?
+            system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{staged_path}/PROJECT_NAME"]
+          end
+
+# release-please writes the changelog and creates the GitHub release; GoReleaser
+# only attaches the artifacts to it.
+changelog:
+  disable: true
+
+# A keyless cosign signature over checksums.txt, as a Sigstore bundle, covers
+# every archive through its checksum. `artifacts: binary` would sign nothing:
+# it only matches binaries released on their own, and ours ship in archives.
+signs:
+  - cmd: cosign
+    signature: "${artifact}.sigstore.json"
+    args:
+      - sign-blob
+      - "--bundle=${signature}"
+      - "${artifact}"
+      - --yes
+    artifacts: checksum
+
+release:
+  github:
+    owner: SpechtLabs
+    name: PROJECT_NAME
+  mode: keep-existing

@@ -1,100 +1,70 @@
-# API-related files
-api:
-  - changed-files:
-      - any-glob-to-any-file:
-          - 'api/**'
-          - 'pkg/swagger/**'
+# Labels for pull requests, by the files they change. Add a label per area as
+# the project grows (sigil's labeler.yml has one per compiler stage); keep
+# the build label's list in step with the tooling files.
 
-# CLI-related files
+# CLI commands and entrypoint
 cli:
   - changed-files:
       - any-glob-to-any-file:
-          - 'cmd/cli/**'
-          - 'internal/cli/**'
+          - "cmd/**"
+          - "internal/cli/**"
 
-# Server-related files
-server:
+# Library code other projects can import
+go-api:
   - changed-files:
       - any-glob-to-any-file:
-          - 'cmd/server/**'
-          - 'pkg/service/**'
-
-# Kubernetes/Operator-related files
-kubernetes:
-  - changed-files:
-      - any-glob-to-any-file:
-          - 'config/**'
-          - 'pkg/operator/**'
-          - 'pkg/client/k8s/**'
-
-# Tailscale integration
-tailscale:
-  - changed-files:
-      - any-glob-to-any-file:
-          - 'pkg/tshttp/**'
-
-# Authentication/Security/Middleware
-security:
-  - changed-files:
-      - any-glob-to-any-file:
-          - 'pkg/middleware/**'
+          - "pkg/**"
 
 # Tests
 tests:
   - changed-files:
       - any-glob-to-any-file:
-          - '**/*_test.go'
-          - '**/testdata/**'
-          - '**/mock/**'
+          - "**/*_test.go"
+          - "**/testdata/**"
 
-# Configuration and deployment
-config:
-  - changed-files:
-      - any-glob-to-any-file:
-          - 'config.yaml'
-          - 'hack/**'
-
-# Observability (metrics, logging)
-observability:
-  - changed-files:
-      - any-glob-to-any-file:
-          - 'internal/utils/o11y.go'
-          - 'pkg/service/api/metrics.go'
-          - 'pkg/operator/metrics.go'
-
-# Models and utilities
-models:
-  - changed-files:
-      - any-glob-to-any-file:
-          - 'pkg/models/**'
-          - 'pkg/service/models/**'
-          - 'internal/utils/**'
-
-# Documentation (Markdown files or docs folders)
+# Documentation
 documentation:
   - changed-files:
       - any-glob-to-any-file:
-          - 'docs/**'
-          - '**/*.md'
+          - "docs/**"
+          - "**/*.md"
 
-# Build system files
+# The docs site's build: VuePress config, theme and dependencies
+docs-site:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "docs/.vuepress/**"
+          - "docs/package.json"
+          - "docs/bun.lock"
+
+# Build, release, and CI plumbing
 build:
   - changed-files:
       - any-glob-to-any-file:
-          - '.github/**'
-          - 'Makefile'
-          - 'Dockerfile'
-          - 'go.mod'
-          - 'go.sum'
-          - 'renovate.json'
+          - ".github/**"
+          - ".goreleaser.yaml"
+          - ".release-please-config.json"
+          - ".release-please-manifest.json"
+          - ".mise.toml"
+          - ".golangci.yaml"
+          - ".custom-gcl.yml"
+          - ".pre-commit-config.yaml"
+          - ".markdownlint-cli2.yaml"
+          - ".yamllint.yaml"
+          - ".editorconfig"
+          - "codecov.yml"
+          - "renovate.json"
+          - "go.mod"
+          - "go.sum"
 
-# Add 'enhancement' label to any PR where the head branch name starts with `feature`
+# Add 'enhancement' to any PR whose head branch starts with `feat` or `feature`
 enhancement:
   - head-branch:
-    - '^feature'
+      - "^feat"
+      - "^feature"
 
-# Add 'bug' label to any PR where the head branch name starts with `feature`
+# Add 'bug' to any PR whose head branch starts with `fix` or `bug`
 bug:
   - head-branch:
-      - '^bug'
-      - '^fix'
+      - "^fix"
+      - "^bug"
