@@ -1,7 +1,8 @@
 name: Documentation
 
 # Lints and builds the documentation website (docs/) on every pull request
-# that touches it, and deploys it to pages.specht-labs.de from main.
+# that touches it, and deploys it to pages.specht-labs.de from main and once
+# a day.
 #
 # go-project-template itself doesn't deploy: its site is placeholder text. A
 # repository created from the template has another name, so the deploy job
@@ -9,6 +10,11 @@ name: Documentation
 # deploy.
 on:
   workflow_dispatch:
+  # docs-kit fetches contributors and releases from the GitHub API at build
+  # time, so the site only changes when it's rebuilt. A daily rebuild keeps
+  # that data from going stale between docs changes.
+  schedule:
+    - cron: "17 4 * * *"
   push:
     branches:
       - main
@@ -79,9 +85,13 @@ jobs:
 
       - name: Build
         run: mise run docs-build
+        env:
+          # Authenticates docs-kit's build-time GitHub API calls for the
+          # contributors and releases sections.
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload Artifacts
-        # Only the deploy job consumes this, and it runs on push/dispatch.
+        # Only the deploy job consumes this, and it doesn't run on pull requests.
         if: github.event_name != 'pull_request'
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
@@ -97,7 +107,8 @@ jobs:
       - md
     if: >-
       github.repository != 'SpechtLabs/go-project-template' &&
-      (github.event_name == 'workflow_dispatch' || github.event_name == 'push')
+      (github.event_name == 'workflow_dispatch' || github.event_name == 'push' ||
+      github.event_name == 'schedule')
     permissions:
       id-token: write
       pages: write

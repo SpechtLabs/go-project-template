@@ -18,9 +18,7 @@
   "homepage": "https://github.com/SpechtLabs/PROJECT_NAME#readme",
   "devDependencies": {
     "@vuepress/bundler-vite": "2.0.0-rc.31",
-    "@vuepress/plugin-register-components": "2.0.0-rc.135",
     "http-server": "^14.1.1",
-    "markdown-it-container": "^4.0.0",
     "sass-embedded": "^1.105.1",
     "typescript": "^6.0.3",
     "vue": "^3.5.43",
@@ -28,6 +26,7 @@
     "vuepress-theme-plume": "1.0.0-rc.212"
   },
   "dependencies": {
+    "@spechtlabs/docs-kit": "github:SpechtLabs/docs-kit#v0.1.0",
     "mermaid": "^12.1.0"
   },
   "optionalDependencies": {

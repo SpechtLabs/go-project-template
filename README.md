@@ -42,6 +42,7 @@ This is the template new SpechtLabs Go projects start from. It holds the tooling
    - **Secrets:** `CODECOV_TOKEN` (the coverage upload; optional for a public repository), `RELEASE_PLEASE_TOKEN` (a fine-grained token with read and write access to contents, pull requests and issues, so the release pull request's CI runs; release.yaml explains why) and `HOMEBREW_TAP_GITHUB_TOKEN` (write access to SpechtLabs/homebrew-tap, for the cask). The organization may already provide them.
    - **Renovate:** make sure the Renovate app covers the new repository.
    - **Docs:** set up the project's site on StaticPages (pages.specht-labs.de) before the first deploy, or delete `docs/` and `.github/workflows/docs-website.yaml` if the project has no website.
+   - **Docs sections:** the site's shared components come from [docs-kit](https://github.com/SpechtLabs/docs-kit). To show the project's contributors or releases on the home page, add `SpechtLabs/my-tool` to the `repos` list of `docsKitPlugin` in `docs/.vuepress/config.ts` once the repository is public. The build fetches every listed repository from the GitHub API and fails in CI when it can't.
 
 The release and docs deploy jobs skip in go-project-template itself, so the template never tags a version or publishes a cask. A repository created from it has another name, so they run there with nothing to change.
 
@@ -55,7 +56,7 @@ The release and docs deploy jobs skip in go-project-template itself, so the temp
 | `.github/workflows/go.yaml` | Lint, unit tests with the race detector and coverage for Codecov, and a GoReleaser snapshot build. |
 | `.github/workflows/release.yaml` | release-please, gated on `go.yaml`, and GoReleaser once a release is created. A manual run with a tag repairs a release that failed to publish. |
 | `.github/workflows/pr-hygiene.yaml` | Checks the pull request title is a Conventional Commit, checks release-please can parse the squash commit (`.github/commit-lint/`), and labels the pull request (`.github/labeler.yml`). |
-| `.github/workflows/docs-website.yaml` | Lints and builds the VuePress site in `docs/`, and deploys it from main. |
+| `.github/workflows/docs-website.yaml` | Lints and builds the VuePress site in `docs/`, and deploys it from main and once a day, so the GitHub data docs-kit fetches at build time stays current. |
 | `.goreleaser.yaml` | Linux and macOS binaries for amd64 and arm64, a cosign-signed `checksums.txt`, and a Homebrew cask in SpechtLabs/homebrew-tap. |
 | `.release-please-config.json` | Versions and changelog from Conventional Commits; `docs/` changes don't cut releases. |
 | `renovate.json` | Keeps Go modules, tools, actions and docs dependencies current, automerging all but majors. |
