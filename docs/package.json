@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "@spechtlabs/docs-kit": "github:SpechtLabs/docs-kit#v0.1.1",
-    "mermaid": "^12.2.0"
+    "mermaid": "^12.3.0"
   },
   "optionalDependencies": {
     "@rollup/rollup-linux-x64-gnu": "^4.67.4",
