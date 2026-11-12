@@ -42,7 +42,7 @@ pinact = "5.0.2"
 # package, which mise installs with this node.
 bun = "1.4.4"
 node = "24.22.2"
-markdownlint-cli2 = "0.24.0"
+markdownlint-cli2 = "0.24.1"
 
 [tasks.build]
 description = "Build the PROJECT_NAME binary into bin/"
