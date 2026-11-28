@@ -27,10 +27,10 @@
   },
   "dependencies": {
     "@spechtlabs/docs-kit": "github:SpechtLabs/docs-kit#v0.1.1",
-    "mermaid": "^12.3.0"
+    "mermaid": "^12.4.0"
   },
   "optionalDependencies": {
-    "@rollup/rollup-linux-x64-gnu": "^4.68.8",
+    "@rollup/rollup-linux-x64-gnu": "^4.68.9",
     "sass-embedded-linux-x64": "latest"
   },
   "scripts": {
